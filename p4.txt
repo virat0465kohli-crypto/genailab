@@ -1,0 +1,24 @@
+!pip install gensim transformers nltk
+
+import gensim.downloader as api
+from transformers import pipeline
+import string
+
+wv = api.load("glove-wiki-gigaword-100")
+gen = pipeline("text-generation", model="gpt2")
+
+# Enrich + generate
+def run(p, k):
+    try: k2 = wv.most_similar(k, topn=1)[0][0]
+    except: k2 = k
+    p2 = " ".join([k2 if w.strip(string.punctuation)==k else w for w in p.split()])
+    return gen(p)[0]['generated_text'], gen(p2)[0]['generated_text']
+
+# Run
+p = "Who is king."
+r1, r2 = run(p, "king")
+
+print("Original:\n", r1)
+print("\nEnriched:\n", r2)
+print("\nLength:", len(r1), "|", len(r2))
+print("Dots:", r1.count("."), "|", r2.count("."))

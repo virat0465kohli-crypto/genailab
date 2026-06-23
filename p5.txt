@@ -1,0 +1,20 @@
+!pip install gensim nltk
+
+import gensim.downloader as api
+import random, nltk
+nltk.download('punkt')
+
+wv = api.load("glove-wiki-gigaword-100")
+
+def generate(seed):
+    try:
+        sw = [w for w,_ in wv.most_similar(seed, topn=5)]
+    except:
+        return "Word not found"
+
+    return f"{seed} connects with {sw[0]}, {sw[1]}, and {sw[2]}. \
+It often relates to {sw[3]} and {sw[4]}. \
+Together they form a meaningful idea about {seed}."
+
+word = input("Enter word: ")
+print("\n", generate(word))

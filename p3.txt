@@ -1,0 +1,38 @@
+!pip install gensim matplotlib scikit-learn
+
+from gensim.models import Word2Vec
+import numpy as np, matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
+
+corpus = [
+ "patient diagnosed diabetes hypertension",
+ "mri scans brain abnormalities",
+ "treatment antibiotics monitoring",
+ "symptoms fever fatigue pain",
+ "vaccine viral infections",
+ "therapy recovery doctors",
+ "clinical trial results journal",
+ "surgeon invasive procedure",
+ "genetic disorder diagnosis"
+]
+
+sent = [s.split() for s in corpus]
+model = Word2Vec(sent, vector_size=100, window=5, min_count=1, epochs=50)
+
+# Visualize
+def plot():
+    words = list(model.wv.index_to_key)
+    vec = np.array([model.wv[w] for w in words])
+    red = TSNE(2, perplexity=5).fit_transform(vec)
+    for i,w in enumerate(words):
+        plt.scatter(red[i,0], red[i,1]); plt.text(red[i,0], red[i,1], w)
+    plt.title("Embeddings"); plt.show()
+
+# Similar words
+def similar(w):
+    print(f"\n{w}:")
+    for x,s in model.wv.most_similar(w, topn=5):
+        print(x, round(s,2))
+
+plot()
+similar("treatment")

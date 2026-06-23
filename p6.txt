@@ -1,0 +1,16 @@
+!pip install transformers
+from transformers import pipeline
+
+sa = pipeline("sentiment-analysis")
+
+texts = [
+ "The product is amazing!",
+ "Very disappointed with the service.",
+ "It was average.",
+ "Fantastic quality!",
+ "Not great, not bad."
+]
+
+for t in texts:
+    r = sa(t)[0]
+    print(t, "->", r['label'], round(r['score'],4))

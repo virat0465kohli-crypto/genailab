@@ -1,0 +1,43 @@
+!pip install gensim numpy
+
+import gensim.downloader as api
+
+print("Loading pre-trained word vectors...")
+wv = api.load("word2vec-google-news-300")
+
+
+def analogy(a, b, c):
+   try:
+       print(f"\n{a} - {b} + {c}:")
+       for word, score in wv.most_similar(positive=[a, c], negative=[b], topn=5):
+           if word not in {a, b, c}:
+               print(f"{word}: {score:.4f}")
+   except KeyError as e:
+       print(f"Missing word: {e}")
+
+def similarity(a, b):
+   try:
+       print(f"\nSimilarity ({a}, {b}): {wv.similarity(a, b):.4f}")
+   except KeyError as e:
+       print(f"Missing word: {e}")
+
+
+def most_similar(word):
+   try:
+       print(f"\nMost similar to '{word}':")
+       for w, s in wv.most_similar(word, topn=5):
+           print(f"{w}: {s:.4f}")
+   except KeyError as e:
+       print(f"Missing word: {e}")
+
+analogy("king", "man", "woman")
+analogy("paris", "france", "germany")
+analogy("apple", "fruit", "carrot")
+
+similarity("cat", "dog")
+similarity("computer", "keyboard")
+similarity("music", "art")
+
+most_similar("happy")
+most_similar("sad")
+most_similar("technology")

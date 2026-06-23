@@ -1,0 +1,66 @@
+A)
+!pip install gensim matplotlib scikit-learn
+
+import gensim.downloader as api
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+
+wv = api.load("word2vec-google-news-300")
+
+# Analogy
+def analogy(a,b,c):
+    words = [a,b,c] + [w for w,_ in wv.most_similar(positive=[a,c], negative=[b], topn=3)]
+    return words
+
+# Visualize
+def plot(words, method='pca'):
+    vec = np.array([wv[w] for w in words])
+    red = PCA(2).fit_transform(vec) if method=='pca' else TSNE(2, perplexity=3).fit_transform(vec)
+    
+    for i,w in enumerate(words):
+        plt.scatter(red[i,0], red[i,1])
+        plt.text(red[i,0], red[i,1], w)
+    
+    plt.title(method.upper())
+    plt.show()
+
+# Run
+words = analogy("king","man","woman")
+plot(words, 'pca')
+plot(words, 'tsne')
+---------------------------------------------------------------------------------------
+
+
+B)
+!pip install gensim scikit-learn matplotlib
+
+import gensim.downloader as api
+import numpy as np, matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+
+wv = api.load("word2vec-google-news-300")
+
+words = ["computer","software","hardware","algorithm","data",
+         "network","programming","machine","learning","ai"]
+
+# Visualize
+def plot(words, m='pca'):
+    vec = np.array([wv[w] for w in words])
+    red = PCA(2).fit_transform(vec) if m=='pca' else TSNE(2, perplexity=3).fit_transform(vec)
+    for i,w in enumerate(words):
+        plt.scatter(red[i,0], red[i,1]); plt.text(red[i,0], red[i,1], w)
+    plt.title(m.upper()); plt.show()
+
+# Similar words
+def similar(w):
+    print(f"\n{w}:")
+    for x,s in wv.most_similar(w, topn=5):
+        print(x, round(s,4))
+
+# Run
+plot(words, 'pca')
+plot(words, 'tsne')
+similar("computer")

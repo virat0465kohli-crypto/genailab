@@ -1,0 +1,11 @@
+#!pip install transformers
+from transformers import pipeline
+summ = pipeline("summarization", model="facebook/bart-large-cnn")
+
+text = """AI is a fast-growing field that creates intelligent machines.
+It is used in healthcare, finance, and more. Applications include chatbots,
+self-driving cars, and recommendation systems. It also raises ethical issues."""
+
+out = summ(text, max_length=100, min_length=30)[0]['summary_text']
+
+print("Summary:\n", out)
