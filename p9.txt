@@ -1,0 +1,29 @@
+import wikipediaapi
+
+wiki = wikipediaapi.Wikipedia(
+    user_agent="MyApp/1.0",
+    language="en"
+)
+
+institution = input("Enter institution name: ")
+
+page = wiki.page(institution)
+
+if not page.exists():
+    print("Institution not found.")
+else:
+    lines = page.text.split("\n")
+
+    def find(keyword):
+        for line in lines:
+            if keyword.lower() in line.lower():
+                return line.split(":")[-1].strip()
+        return "N/A"
+
+    print("\nInstitution:", institution)
+    print("Founder:", find("Founder"))
+    print("Founded:", find("Founded"))
+    print("Branches:", find("Branches"))
+    print("Employees:", find("Employees"))
+    print("\nSummary:\n")
+    print(page.summary[:500])

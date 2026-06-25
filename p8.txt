@@ -1,0 +1,15 @@
+import getpass
+from langchain_core.prompts import PromptTemplate
+from langchain_cohere import ChatCohere
+
+text = open(r"K:\GenAILab\Teaching.txt", encoding="utf-8").read()
+
+llm = ChatCohere(cohere_api_key=getpass.getpass("API Key: "), model="command-r-plus-08-2024")
+
+chain = PromptTemplate.from_template("""
+{text}
+
+Summarize, give 3 key takeaways, and state the sentiment.
+""") | llm
+
+print(chain.invoke({"text": text}).content)

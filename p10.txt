@@ -1,0 +1,20 @@
+
+from langchain_cohere import ChatCohere
+from langchain_core.prompts import PromptTemplate
+import wikipediaapi, getpass
+
+llm = ChatCohere(cohere_api_key=getpass.getpass("API Key: "), model="command-a-03-2025")
+wiki = wikipediaapi.Wikipedia(user_agent="IPCBot", language="en")
+ipc = wiki.page("Indian Penal Code").text[:5000]
+
+chain = PromptTemplate.from_template("""
+{ipc}
+Question: {q}
+Answer with IPC section if applicable.
+""") | llm
+
+while True:
+    q = input("\nAsk IPC (exit to quit): ")
+    if q.lower() == "exit":
+        break
+    print("\n", chain.invoke({"ipc": ipc, "q": q}).content)
